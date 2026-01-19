@@ -3,6 +3,7 @@ using Email.Api.BLL.Abstract;
 using Email.Api.Configuration;
 using Email.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 
@@ -35,12 +36,14 @@ namespace Email.Api.Controllers
         [HttpGet("test")]
         public IActionResult Test()
         {
+            _logger.LogInformation("test");
             return Ok("123");
         }
 
         [HttpPost("send")]
         public async Task<IActionResult> SendEmail([FromBody] SendEmailRequest request)
         {
+            _logger.LogInformation("send");
             // Проверяем входные данные
             if (string.IsNullOrWhiteSpace(request.Body))
             {
