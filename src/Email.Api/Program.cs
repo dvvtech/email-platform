@@ -10,8 +10,6 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.ApplyCors();
-
 var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 app.Logger.LogInformation(environment ?? "Empty environment");
 // Configure the HTTP request pipeline.
@@ -20,6 +18,10 @@ if (builder.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+    app.ApplyCors();
 }
 
 app.UseHttpsRedirection();

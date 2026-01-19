@@ -20,8 +20,10 @@ namespace Email.Api.AppStart
             {
                 _builder.Services.AddSwaggerGen();
             }
-
-            _builder.Services.ConfigureCors();
+            else
+            {
+                _builder.Services.ConfigureCors();
+            }
 
             // Регистрация HttpClientFactory
             _builder.Services.AddHttpClient();
