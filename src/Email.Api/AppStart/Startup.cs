@@ -1,4 +1,6 @@
-﻿using Email.Api.Configuration;
+﻿using Email.Api.BLL.Abstract;
+using Email.Api.BLL.Services;
+using Email.Api.Configuration;
 
 namespace Email.Api.AppStart
 {
@@ -34,28 +36,28 @@ namespace Email.Api.AppStart
                     .ValidateDataAnnotations()
                     .ValidateOnStart();
 
-            //_builder.Services.Configure<GoogleRecaptchaConfig>(_builder.Configuration.GetSection(GoogleRecaptchaConfig.SectionName));
+            _builder.Services.Configure<GoogleRecaptchaConfig>(_builder.Configuration.GetSection(GoogleRecaptchaConfig.SectionName));
         }
 
         private void AddEmailServices()
         {
-            //_builder.Services.AddScoped<IEmailBodyGenerator, EmailBodyGenerator>();
+            _builder.Services.AddScoped<IEmailBodyGenerator, EmailBodyGenerator>();
 
-            //_builder.Services.AddSingleton<IEmailSender>(provider =>
-            //{
-            //    var smtpConfig = _builder.Configuration.GetSection(SmtpConfig.SectionName).Get<SmtpConfig>();
+            _builder.Services.AddSingleton<IEmailSender>(provider =>
+            {
+                var smtpConfig = _builder.Configuration.GetSection(SmtpConfig.SectionName).Get<SmtpConfig>();
 
-            //    var configuration = provider.GetRequiredService<IConfiguration>();
-            //    var logger = provider.GetRequiredService<ILogger<EmailSender>>();
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                var logger = provider.GetRequiredService<ILogger<EmailSender>>();
 
-            //    return new EmailSender(
-            //        smtpConfig.Host,
-            //        smtpConfig.Port,
-            //        smtpConfig.Username,
-            //        smtpConfig.Password,
-            //        logger
-            //    );
-            //});
+                return new EmailSender(
+                    smtpConfig.Host,
+                    smtpConfig.Port,
+                    smtpConfig.Username,
+                    smtpConfig.Password,
+                    logger
+                );
+            });
         }
     }
 }

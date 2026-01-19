@@ -1,4 +1,6 @@
+using Email.Api.Configuration;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Email.Api.Controllers;
 
@@ -13,7 +15,7 @@ public class WeatherForecastController : ControllerBase
 
     private readonly ILogger<WeatherForecastController> _logger;
 
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
+    public WeatherForecastController(ILogger<WeatherForecastController> logger, IOptions<SmtpConfig> options)
     {
         _logger = logger;
     }
