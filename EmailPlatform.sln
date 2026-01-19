@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy", "deploy", "{B8E081BB-8CE1-4C59-B916-E2B22D882B99}"
 	ProjectSection(SolutionItems) = preProject
+		deploy\.env = deploy\.env
 		deploy\docker-compose.yml = deploy\docker-compose.yml
 	EndProjectSection
 EndProject
