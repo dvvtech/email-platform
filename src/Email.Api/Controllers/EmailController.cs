@@ -3,7 +3,6 @@ using Email.Api.BLL.Abstract;
 using Email.Api.Configuration;
 using Email.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 
