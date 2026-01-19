@@ -1,4 +1,5 @@
 using Email.Api.AppStart;
+using Email.Api.AppStart.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ if (builder.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.ApplyCors();
 
 app.UseAuthorization();
 

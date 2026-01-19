@@ -1,4 +1,5 @@
-﻿using Email.Api.BLL.Abstract;
+﻿using Email.Api.AppStart.Extensions;
+using Email.Api.BLL.Abstract;
 using Email.Api.BLL.Services;
 using Email.Api.Configuration;
 
@@ -20,7 +21,9 @@ namespace Email.Api.AppStart
                 _builder.Services.AddSwaggerGen();
             }
 
-            // 1. Регистрация HttpClientFactory
+            _builder.Services.ConfigureCors();
+
+            // Регистрация HttpClientFactory
             _builder.Services.AddHttpClient();
 
             InitConfigs();
