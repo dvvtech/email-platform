@@ -57,9 +57,6 @@ namespace Email.Api.Controllers
                 _ => throw new ArgumentException("Invalid Type")
             };
 
-            _logger.LogInformation(request.RecaptchaToken);
-            _logger.LogInformation(secretKey);
-
             var recaptchaValid = await ValidateRecaptcha(request.RecaptchaToken, secretKey);
             if (!recaptchaValid)
             {
