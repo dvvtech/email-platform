@@ -13,6 +13,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/Email.Api/Email.Api.csproj", "src/Email.Api/"]
+COPY ["src/Email.Core/Email.Core.csproj", "src/Email.Core/"]
+COPY ["src/Email.Models/Email.Models.csproj", "src/Email.Models/"]
 RUN dotnet restore "./src/Email.Api/Email.Api.csproj"
 COPY . .
 WORKDIR "/src/src/Email.Api"

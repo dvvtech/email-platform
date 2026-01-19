@@ -1,0 +1,21 @@
+services:
+  email_api:
+    container_name: email-api-container
+    build:
+      context: ..
+      dockerfile: src/Email.Api/Dockerfile
+    restart: unless-stopped    
+    networks:
+      - public-network
+    labels:      
+      - "traefik.enable=true"      
+      - "traefik.http.routers.email-api.rule=Host(`api.cloud-platform.pro`) && PathPrefix(`/email`)"      
+      - "traefik.http.routers.email-api.entrypoints=websecure"      
+      - "traefik.http.routers.email-api.tls.certresolver=letsencrypt"     
+      - "traefik.http.services.email-api.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.email-stripprefix.stripprefix.prefixes=/email"
+      - "traefik.http.routers.email-api.middlewares=email-stripprefix"
+
+networks:
+  public-network:
+    external: true
