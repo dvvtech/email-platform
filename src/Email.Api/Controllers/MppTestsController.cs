@@ -37,10 +37,17 @@ namespace Email.Api.Controllers
                 };
                 var userData = JsonSerializer.Deserialize<UserData>(request.UserData, options);                        
                 var results = JsonSerializer.Deserialize<AnalysisResult>(request.Results, options);
+                var stats = JsonSerializer.Deserialize<AnalysisResult>(request.Stats, options);
+                _logger.LogInformation(request.Stats);
 
                 if (request.Image != null)
                 {
                     _logger.LogInformation("request.Image != null");
+                }
+
+                if (stats != null)
+                {
+                    _logger.LogInformation("stats != null");
                 }
 
             }
