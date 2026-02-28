@@ -1,12 +1,14 @@
 ﻿using Email.Api.BLL.Abstract;
 using Email.Api.BLL.Services.MppTests;
 using Email.Models.MppTests;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Email.Api.Controllers
 {
     [Route("mpptests")]
     [ApiController]
+    [EnableCors("AllowAll")]
     public class MppTestsController : ControllerBase
     {
         private readonly IEmailSender _emailSender;

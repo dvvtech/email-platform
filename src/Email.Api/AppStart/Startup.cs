@@ -46,15 +46,7 @@ namespace Email.Api.AppStart
         }
 
         private void AddEmailServices()
-        {
-            // Configure file upload limits
-            _builder.Services.Configure<FormOptions>(options =>
-            {
-                options.ValueLengthLimit = int.MaxValue;
-                options.MultipartBodyLengthLimit = int.MaxValue;
-                options.MemoryBufferThreshold = int.MaxValue;
-            });
-
+        {            
             _builder.Services.AddScoped<IEmailBodyGenerator, EmailBodyGenerator>();
 
             _builder.Services.AddSingleton<IEmailSender>(provider =>
