@@ -190,7 +190,7 @@ namespace Email.Api.BLL.Services
             // Информация о пользователе
             html.AppendLine("<div class='section'>");
             html.AppendLine("<div class='section-title'>📋 Информация о пользователе</div>");
-            html.AppendLine($"<p><strong>Пол:</strong> {GetGenderText(emailData.UserData.Gender)}</p>");
+            html.AppendLine($"<p><strong>Пол:</strong> {emailData.UserData.Gender}</p>");
             html.AppendLine($"<p><strong>Дата рождения:</strong> {emailData.UserData.BirthDate}</p>");
             html.AppendLine($"<p><strong>Возраст:</strong> {emailData.UserData.Age} лет</p>");
             html.AppendLine($"<p><strong>Знак зодиака:</strong> {emailData.UserData.ZodiacSign}</p>");
@@ -257,18 +257,6 @@ namespace Email.Api.BLL.Services
             html.AppendLine("</html>");
 
             return html.ToString();
-        }
-
-        private string GetGenderText(string gender)
-        {
-            return gender?.ToLower() switch
-            {
-                "male" => "Мужской",
-                "female" => "Женский",
-                "м" => "Мужской",
-                "ж" => "Женский",
-                _ => "Не указан"
-            };
         }
     }
 }
