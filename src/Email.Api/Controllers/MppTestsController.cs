@@ -37,17 +37,38 @@ namespace Email.Api.Controllers
                 };
                 var userData = JsonSerializer.Deserialize<UserData>(request.UserData, options);                        
                 var results = JsonSerializer.Deserialize<AnalysisResult>(request.Results, options);
-                var stats = JsonSerializer.Deserialize<AnalysisResult>(request.Stats, options);
-                _logger.LogInformation(request.Stats);
+                var stats = JsonSerializer.Deserialize<Dictionary<string, ColorStatistic>>(request.Stats, options);
 
-                if (request.Image != null)
+
+                var emailData = new EmailData
                 {
-                    _logger.LogInformation("request.Image != null");
+                    UserData = userData,
+                    Stats = stats,
+                    Results = results
+                };
+
+                // Convert IFormFile to byte[]
+                byte[] imageBytes;
+                using (var memoryStream = new MemoryStream())
+                {
+                    await request.Image.CopyToAsync(memoryStream);
+                    imageBytes = memoryStream.ToArray();
                 }
 
-                if (stats != null)
+                // Send email with attachment
+                var result = await _emailSender.SendTestResults(
+                    request.Email,
+                    emailData,
+                    imageBytes
+                );
+
+                if (result.IsSuccess)
                 {
-                    _logger.LogInformation("stats != null");
+                    return Ok(new { success = true, message = "Email sent successfully" });
+                }
+                else
+                {
+                    return StatusCode(500, new { success = false, message = result.Error.Description });
                 }
 
             }
