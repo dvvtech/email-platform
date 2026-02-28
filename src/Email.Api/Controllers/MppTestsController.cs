@@ -27,7 +27,7 @@ namespace Email.Api.Controllers
         public async Task<IActionResult> SendEmail2([FromForm] EmailRequest2 request)
         {
             _logger.LogInformation("mpptests send2");
-            _logger.LogInformation(request.UserData.SelectedTest);
+            _logger.LogInformation(request.UserData);
             return Ok(new { success = true, message = "Email sent successfully" });
         }
 
