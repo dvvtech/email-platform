@@ -12,7 +12,7 @@ namespace Email.Models.MppTests
         /// <summary>
         /// User data (gender, birth date, age, zodiac sign, selected test)
         /// </summary>
-        public UserData UserData { get; set; }
+        //public UserData UserData { get; set; }
 
         /// <summary>
         /// Statistics of colors used in the test
