@@ -138,18 +138,6 @@ namespace Email.Api.BLL.Services.MppTests
             _bodyBuilder.AppendLine("Это письмо сформировано автоматически. Пожалуйста, не отвечайте на него.");
         }
 
-        private string GetGenderText(string gender)
-        {
-            return gender?.ToLower() switch
-            {
-                "male" => "Мужской",
-                "female" => "Женский",
-                "м" => "Мужской",
-                "ж" => "Женский",
-                _ => "Не указан"
-            };
-        }
-
         private string GenerateColorBar(int percentage, int length = 20)
         {
             int filledLength = (int)Math.Round(percentage / 100.0 * length);

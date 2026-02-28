@@ -39,6 +39,7 @@ namespace Email.Api.Controllers
                 var results = JsonSerializer.Deserialize<AnalysisResult>(request.Results, options);
                 var stats = JsonSerializer.Deserialize<Dictionary<string, ColorStatistic>>(request.Stats, options);
 
+                _logger.LogInformation(userData.Gender);
 
                 var emailData = new EmailData
                 {
