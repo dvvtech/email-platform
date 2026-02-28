@@ -59,7 +59,7 @@ namespace Email.Api.BLL.Services
             return Result.Success();
         }
 
-        public async Task<Result> SendTestResults(string to, EmailData emailData)
+        public async Task<Result> SendTestResults(string to, EmailData emailData, byte[] imageBytes, string imageFileName = "test-result.png")
         {
             try
             {
@@ -67,7 +67,7 @@ namespace Email.Api.BLL.Services
                 var bodyBuilder = new EmailBodyBuilder("Уважаемый пользователь");
                 string emailBody = bodyBuilder.BuildEmailBody(emailData);
 
-                // Создаем HTML версию письма (более красивая)
+                // Создаем HTML версию письма
                 string htmlBody = BuildHtmlEmail(emailData);
 
                 var mailMessage = new MimeMessage();
@@ -75,14 +75,57 @@ namespace Email.Api.BLL.Services
                 mailMessage.To.Add(new MailboxAddress("", to));
                 mailMessage.Subject = $"Результаты тестирования от {DateTime.Now:dd.MM.yyyy}";
 
-                // Создаем multipart сообщение с текстовой и HTML версиями
-                var multipart = new Multipart("alternative");
+                // Создаем multipart сообщение
+                var multipart = new Multipart("mixed");
+
+                // Создаем alternative часть для текста и HTML
+                var alternative = new Multipart("alternative");
 
                 // Добавляем текстовую версию
-                multipart.Add(new TextPart("plain") { Text = emailBody });
+                alternative.Add(new TextPart("plain") { Text = emailBody });
 
                 // Добавляем HTML версию
-                multipart.Add(new TextPart("html") { Text = htmlBody });
+                alternative.Add(new TextPart("html") { Text = htmlBody });
+
+                // Добавляем alternative в основное сообщение
+                multipart.Add(alternative);
+
+                // Добавляем изображение как вложение
+                if (imageBytes != null && imageBytes.Length > 0)
+                {
+                    var attachment = new MimePart("image", "png")
+                    {
+                        Content = new MimeContent(new MemoryStream(imageBytes)),
+                        ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+                        ContentTransferEncoding = ContentEncoding.Base64,
+                        FileName = imageFileName
+                    };
+
+                    multipart.Add(attachment);
+
+                    // Также добавляем изображение как embedded для отображения в HTML (опционально)
+                    var embeddedImage = new MimePart("image", "png")
+                    {
+                        Content = new MimeContent(new MemoryStream(imageBytes)),
+                        ContentId = "test-image",
+                        ContentDisposition = new ContentDisposition(ContentDisposition.Inline),
+                        ContentTransferEncoding = ContentEncoding.Base64,
+                        FileName = imageFileName
+                    };
+
+                    // Обновляем HTML, чтобы показать изображение
+                    string htmlWithImage = htmlBody.Replace("</body>",
+                        $"<div style='margin-top: 30px; text-align: center;'>" +
+                        $"<h3 style='color: #667eea;'>Раскрашенное изображение:</h3>" +
+                        $"<img src='cid:test-image' style='max-width: 100%; border: 1px solid #e0e0e0; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);' />" +
+                        $"</div></body>");
+
+                    // Заменяем HTML версию
+                    alternative.Clear();
+                    alternative.Add(new TextPart("plain") { Text = emailBody });
+                    alternative.Add(new TextPart("html") { Text = htmlWithImage });
+                    multipart.Add(embeddedImage);
+                }
 
                 mailMessage.Body = multipart;
 
@@ -104,6 +147,21 @@ namespace Email.Api.BLL.Services
             }
         }
 
+        // Перегрузка метода для работы с IFormFile
+        public async Task<Result> SendTestResults(string to, EmailData emailData, IFormFile imageFile)
+        {
+            if (imageFile == null || imageFile.Length == 0)
+            {
+                return Result.Failure(EmailErrors.NoImage());
+            }
+
+            using var memoryStream = new MemoryStream();
+            await imageFile.CopyToAsync(memoryStream);
+            byte[] imageBytes = memoryStream.ToArray();
+
+            return await SendTestResults(to, emailData, imageBytes, imageFile.FileName);
+        }
+
         private string BuildHtmlEmail(EmailData emailData)
         {
             var html = new StringBuilder();
@@ -120,7 +178,7 @@ namespace Email.Api.BLL.Services
             html.AppendLine(".section { margin-bottom: 30px; }");
             html.AppendLine(".section-title { font-size: 18px; font-weight: bold; color: #667eea; margin-bottom: 15px; border-bottom: 2px solid #667eea; padding-bottom: 5px; }");
             html.AppendLine(".color-item { margin-bottom: 10px; }");
-            html.AppendLine(".color-bar { height: 20px; background: linear-gradient(90deg, #667eea " + emailData.Stats.FirstOrDefault().Value.Percentage + "%, #e0e0e0 " + emailData.Stats.FirstOrDefault().Value.Percentage + "%); border-radius: 10px; margin-top: 5px; }");
+            html.AppendLine(".color-bar { height: 20px; border-radius: 10px; margin-top: 5px; }");
             html.AppendLine(".footer { margin-top: 30px; text-align: center; color: #999; font-size: 12px; }");
             html.AppendLine("</style>");
             html.AppendLine("</head>");
@@ -146,9 +204,9 @@ namespace Email.Api.BLL.Services
             foreach (var stat in emailData.Stats.OrderByDescending(s => s.Value.Percentage))
             {
                 html.AppendLine("<div class='color-item'>");
-                html.AppendLine($"<div style='display: flex; justify-content: space-between;'>");
+                html.AppendLine("<div style='display: flex; justify-content: space-between;'>");
                 html.AppendLine($"<span><strong>{stat.Key}</strong></span>");
-                html.AppendLine($"<span>{stat.Value.Percentage}% ({stat.Value.Count} пикселей)</span>");
+                html.AppendLine($"<span>{stat.Value.Percentage}% ({stat.Value.Count:N0} пикселей)</span>");
                 html.AppendLine("</div>");
                 html.AppendLine($"<div class='color-bar' style='background: linear-gradient(90deg, {stat.Value.Hex} {stat.Value.Percentage}%, #e0e0e0 {stat.Value.Percentage}%);'></div>");
                 html.AppendLine("</div>");

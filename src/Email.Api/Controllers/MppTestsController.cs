@@ -1,5 +1,6 @@
-﻿using Email.Models.MppTests;
-using Microsoft.AspNetCore.Http;
+﻿using Email.Api.BLL.Abstract;
+using Email.Api.BLL.Services.MppTests;
+using Email.Models.MppTests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Email.Api.Controllers
@@ -8,7 +9,19 @@ namespace Email.Api.Controllers
     [ApiController]
     public class MppTestsController : ControllerBase
     {
+        private readonly IEmailSender _emailSender;
+        private readonly ILogger<MppTestsController> _logger;
+
+        public MppTestsController(
+            IEmailSender emailSender,
+            ILogger<MppTestsController> logger)
+        {
+            _emailSender = emailSender;
+            _logger = logger;
+        }
+
         [HttpPost("send")]
+        [RequestSizeLimit(10 * 1024 * 1024)] // 10MB limit
         public async Task<IActionResult> SendEmail([FromForm] EmailRequest request)
         {
             try
@@ -25,10 +38,37 @@ namespace Email.Api.Controllers
                     return BadRequest(new { success = false, message = "Image is required" });
                 }
 
-                // Process the request (send email, save to database, etc.)
-                // ...
+                // Convert IFormFile to byte[]
+                byte[] imageBytes;
+                using (var memoryStream = new MemoryStream())
+                {
+                    await request.Image.CopyToAsync(memoryStream);
+                    imageBytes = memoryStream.ToArray();
+                }
 
-                return Ok(new { success = true, message = "Email sent successfully" });
+                // Prepare email data
+                var emailData = new EmailData
+                {
+                    UserData = request.UserData,
+                    Stats = request.Stats,
+                    Results = request.Results
+                };
+
+                // Send email with attachment
+                var result = await _emailSender.SendTestResults(
+                    request.Email,
+                    emailData,
+                    imageBytes
+                );
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new { success = true, message = "Email sent successfully" });
+                }
+                else
+                {
+                    return StatusCode(500, new { success = false, message = result.Error.Description });
+                }                
             }
             catch (Exception ex)
             {
@@ -47,6 +87,13 @@ namespace Email.Api.Controllers
             {
                 return false;
             }
+        }
+
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            _logger.LogInformation("test");
+            return Ok("123");
         }
     }
 }
