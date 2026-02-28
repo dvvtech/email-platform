@@ -27,6 +27,6 @@ namespace Email.Models.MppTests
         /// <summary>
         /// Image file of the colored test
         /// </summary>
-        public IFormFile Image { get; set; }
+        //public IFormFile Image { get; set; }
     }
 }

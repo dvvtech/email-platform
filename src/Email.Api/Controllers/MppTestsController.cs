@@ -36,18 +36,18 @@ namespace Email.Api.Controllers
                 }
 
                 // Validate image
-                if (request.Image == null || request.Image.Length == 0)
-                {
-                    return BadRequest(new { success = false, message = "Image is required" });
-                }
+                //if (request.Image == null || request.Image.Length == 0)
+                //{
+                //    return BadRequest(new { success = false, message = "Image is required" });
+                //}
 
                 // Convert IFormFile to byte[]
-                byte[] imageBytes;
-                using (var memoryStream = new MemoryStream())
-                {
-                    await request.Image.CopyToAsync(memoryStream);
-                    imageBytes = memoryStream.ToArray();
-                }
+                byte[] imageBytes = new byte[] { 1,2,3,4,5,6,7};
+                //using (var memoryStream = new MemoryStream())
+                //{
+                //    await request.Image.CopyToAsync(memoryStream);
+                //    imageBytes = memoryStream.ToArray();
+                //}
 
                 // Prepare email data
                 var emailData = new EmailData
