@@ -36,7 +36,12 @@ namespace Email.Api.Controllers
                     PropertyNameCaseInsensitive = true // Игнорировать регистр
                 };
                 var userData = JsonSerializer.Deserialize<UserData>(request.UserData, options);                        
-                var results = JsonSerializer.Deserialize<AnalysisResult>(request.Results, options);                
+                var results = JsonSerializer.Deserialize<AnalysisResult>(request.Results, options);
+
+                if (request.Image != null)
+                {
+                    _logger.LogInformation("request.Image != null");
+                }
 
             }
             catch (Exception ex)
