@@ -2,7 +2,15 @@
 
 namespace Email.Models.MppTests
 {
-    public class EmailRequest
+    public class EmailRequest2
+    {
+        /// <summary>
+        /// Recipient email address
+        /// </summary>
+        public string Email { get; set; }
+    }
+
+        public class EmailRequest
     {
         /// <summary>
         /// Recipient email address

@@ -22,6 +22,14 @@ namespace Email.Api.Controllers
             _logger = logger;
         }
 
+        [HttpPost("send2")]
+        [RequestSizeLimit(10 * 1024 * 1024)] // 10MB limit
+        public async Task<IActionResult> SendEmail2([FromForm] EmailRequest2 request)
+        {
+            _logger.LogInformation("mpptests send2");
+            return Ok();
+        }
+
         [HttpPost("send")]
         [RequestSizeLimit(10 * 1024 * 1024)] // 10MB limit
         public async Task<IActionResult> SendEmail([FromForm] EmailRequest request)
