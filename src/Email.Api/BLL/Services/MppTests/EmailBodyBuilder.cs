@@ -47,7 +47,7 @@ namespace Email.Api.BLL.Services.MppTests
         {
             _bodyBuilder.AppendLine("📋 ИНФОРМАЦИЯ О ПОЛЬЗОВАТЕЛЕ");
             _bodyBuilder.AppendLine(new string('-', 30));
-            _bodyBuilder.AppendLine($"Пол: {GetGenderText(userData.Gender)}");
+            _bodyBuilder.AppendLine($"Пол: {userData.Gender}");
             _bodyBuilder.AppendLine($"Дата рождения: {userData.BirthDate}");
             _bodyBuilder.AppendLine($"Возраст: {userData.Age} лет");
             _bodyBuilder.AppendLine($"Знак зодиака: {userData.ZodiacSign}");
