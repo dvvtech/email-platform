@@ -18,7 +18,7 @@ namespace Email.Models.MppTests
         /// Statistics of colors used in the test
         /// </summary>
         //public Dictionary<string, ColorStatistic> Stats { get; set; }
-        public string Stats { get; set; }
+        //public string Stats { get; set; }
     }
 
         public class EmailRequest
