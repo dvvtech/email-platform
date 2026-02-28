@@ -37,8 +37,8 @@ namespace Email.Api.Controllers
                 };
                 var userData = JsonSerializer.Deserialize<UserData>(request.UserData, options);
                 _logger.LogInformation(userData.SelectedTest);                
-                var results = JsonSerializer.Deserialize<AnalysisResult>(request.UserData, options);
-                _logger.LogInformation(results.MainCharacteristic);
+                //var results = JsonSerializer.Deserialize<AnalysisResult>(request.UserData, options);
+                _logger.LogInformation(request.Results);
 
             }
             catch (Exception ex)
