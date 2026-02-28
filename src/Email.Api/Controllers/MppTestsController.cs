@@ -24,7 +24,7 @@ namespace Email.Api.Controllers
 
         [HttpPost("send")]
         [RequestSizeLimit(10 * 1024 * 1024)] // 10MB limit
-        public async Task<IActionResult> SendEmail([FromBody] EmailRequest request)
+        public async Task<IActionResult> SendEmail([FromForm] EmailRequest request)
         {
             try
             {
