@@ -26,6 +26,7 @@ namespace Email.Api.Controllers
         {
             try
             {
+                _logger.LogInformation("mpptests send");
                 // Validate email
                 if (string.IsNullOrEmpty(request.Email) || !IsValidEmail(request.Email))
                 {
