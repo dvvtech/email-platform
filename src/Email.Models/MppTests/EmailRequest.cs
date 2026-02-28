@@ -14,6 +14,8 @@ namespace Email.Models.MppTests
         /// </summary>
         public string UserData { get; set; }
 
+        public string Results { get; set; }
+
         /// <summary>
         /// Statistics of colors used in the test
         /// </summary>
