@@ -3,6 +3,7 @@ using Email.Api.BLL.Services.MppTests;
 using Email.Models.MppTests;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace Email.Api.Controllers
 {
@@ -26,8 +27,23 @@ namespace Email.Api.Controllers
         [RequestSizeLimit(10 * 1024 * 1024)] // 10MB limit
         public async Task<IActionResult> SendEmail2([FromForm] EmailRequest2 request)
         {
-            _logger.LogInformation("mpptests send2");
-            _logger.LogInformation(request.UserData);
+            _logger.LogInformation("mpptests send2");            
+
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true // Игнорировать регистр
+                };
+                var userData = JsonSerializer.Deserialize<UserData>(request.UserData, options);
+                _logger.LogInformation(userData.SelectedTest);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("error deserialize", ex);
+            }
+
             return Ok(new { success = true, message = "Email sent successfully" });
         }
 
