@@ -29,54 +29,54 @@ namespace Email.Api.Controllers
         {
             _logger.LogInformation("mpptests send2");            
 
-            try
-            {
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true // Игнорировать регистр
-                };
-                var userData = JsonSerializer.Deserialize<UserData>(request.UserData, options);                        
-                var results = JsonSerializer.Deserialize<AnalysisResult>(request.Results, options);
-                var stats = JsonSerializer.Deserialize<Dictionary<string, ColorStatistic>>(request.Stats, options);
+            //try
+            //{
+            //    var options = new JsonSerializerOptions
+            //    {
+            //        PropertyNameCaseInsensitive = true // Игнорировать регистр
+            //    };
+            //    var userData = JsonSerializer.Deserialize<UserData>(request.UserData, options);                        
+            //    var results = JsonSerializer.Deserialize<AnalysisResult>(request.Results, options);
+            //    var stats = JsonSerializer.Deserialize<Dictionary<string, ColorStatistic>>(request.Stats, options);
 
-                _logger.LogInformation(userData.Gender);
+            //    _logger.LogInformation(userData.Gender);
 
-                var emailData = new EmailData
-                {
-                    UserData = userData,
-                    Stats = stats,
-                    Results = results
-                };
+            //    var emailData = new EmailData
+            //    {
+            //        UserData = userData,
+            //        Stats = stats,
+            //        Results = results
+            //    };
 
-                // Convert IFormFile to byte[]
-                byte[] imageBytes;
-                using (var memoryStream = new MemoryStream())
-                {
-                    await request.Image.CopyToAsync(memoryStream);
-                    imageBytes = memoryStream.ToArray();
-                }
+            //    // Convert IFormFile to byte[]
+            //    byte[] imageBytes;
+            //    using (var memoryStream = new MemoryStream())
+            //    {
+            //        await request.Image.CopyToAsync(memoryStream);
+            //        imageBytes = memoryStream.ToArray();
+            //    }
 
-                // Send email with attachment
-                var result = await _emailSender.SendTestResults(
-                    request.Email,
-                    emailData,
-                    imageBytes
-                );
+            //    // Send email with attachment
+            //    var result = await _emailSender.SendTestResults(
+            //        request.Email,
+            //        emailData,
+            //        imageBytes
+            //    );
 
-                if (result.IsSuccess)
-                {
-                    return Ok(new { success = true, message = "Email sent successfully" });
-                }
-                else
-                {
-                    return StatusCode(500, new { success = false, message = result.Error.Description });
-                }
+            //    if (result.IsSuccess)
+            //    {
+            //        return Ok(new { success = true, message = "Email sent successfully" });
+            //    }
+            //    else
+            //    {
+            //        return StatusCode(500, new { success = false, message = result.Error.Description });
+            //    }
 
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("error deserialize", ex);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.LogError("error deserialize", ex);
+            //}
 
             return Ok(new { success = true, message = "Email sent successfully" });
         }
