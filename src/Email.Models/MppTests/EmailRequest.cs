@@ -16,6 +16,8 @@ namespace Email.Models.MppTests
 
         public string Results { get; set; }
 
+        public IFormFile Image { get; set; }
+
         /// <summary>
         /// Statistics of colors used in the test
         /// </summary>

@@ -35,10 +35,8 @@ namespace Email.Api.Controllers
                 {
                     PropertyNameCaseInsensitive = true // Игнорировать регистр
                 };
-                var userData = JsonSerializer.Deserialize<UserData>(request.UserData, options);
-                _logger.LogInformation(userData.SelectedTest);                
-                var results = JsonSerializer.Deserialize<AnalysisResult>(request.Results, options);
-                _logger.LogInformation(results.MainCharacteristic);
+                var userData = JsonSerializer.Deserialize<UserData>(request.UserData, options);                        
+                var results = JsonSerializer.Deserialize<AnalysisResult>(request.Results, options);                
 
             }
             catch (Exception ex)
