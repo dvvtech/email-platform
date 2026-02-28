@@ -18,6 +18,7 @@
                                            "https://dvvtech.github.io")
                               //.AllowCredentials() // Разрешить куки
                               .AllowAnyHeader()
+                              .AllowCredentials()
                               .AllowAnyMethod();
                     });
 
