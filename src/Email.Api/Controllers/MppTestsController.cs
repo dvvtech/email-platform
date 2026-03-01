@@ -26,16 +26,26 @@ namespace Email.Api.Controllers
             _logger = logger;
         }
 
-        [HttpPost("send2")]
+        [HttpPost("send")]
         [RequestSizeLimit(10 * 1024 * 1024)] // 10MB limit
-        public async Task<IActionResult> SendEmail2([FromForm] EmailRequest2 request)
+        public async Task<IActionResult> SendEmail2([FromForm] EmailRequest request)
         {
             _logger.LogInformation("mpptests send2");
 
-            //await Task.Delay(3000);
-
             try
             {
+                // Validate email
+                if (string.IsNullOrEmpty(request.Email) || !IsValidEmail(request.Email))
+                {
+                    return BadRequest(new { success = false, message = "Invalid email address" });
+                }
+
+                // Validate image
+                if (request.Image == null || request.Image.Length == 0)
+                {
+                    return BadRequest(new { success = false, message = "Image is required" });
+                }
+
                 _ = TrackVisitMppTestsAsync();
 
                 var options = new JsonSerializerOptions
@@ -86,63 +96,6 @@ namespace Email.Api.Controllers
             }
 
             return Ok(new { success = true, message = "Email sent successfully" });
-        }
-
-        [HttpPost("send")]
-        [RequestSizeLimit(10 * 1024 * 1024)] // 10MB limit
-        public async Task<IActionResult> SendEmail([FromForm] EmailRequest request)
-        {
-            try
-            {
-                _logger.LogInformation("mpptests send");                
-                // Validate email
-                if (string.IsNullOrEmpty(request.Email) || !IsValidEmail(request.Email))
-                {
-                    return BadRequest(new { success = false, message = "Invalid email address" });
-                }
-
-                // Validate image
-                //if (request.Image == null || request.Image.Length == 0)
-                //{
-                //    return BadRequest(new { success = false, message = "Image is required" });
-                //}
-
-                // Convert IFormFile to byte[]
-                byte[] imageBytes = new byte[] { 1,2,3,4,5,6,7};
-                //using (var memoryStream = new MemoryStream())
-                //{
-                //    await request.Image.CopyToAsync(memoryStream);
-                //    imageBytes = memoryStream.ToArray();
-                //}
-
-                // Prepare email data
-                var emailData = new EmailData
-                {
-                    UserData = request.UserData,
-                    Stats = request.Stats,
-                    Results = request.Results
-                };
-
-                // Send email with attachment
-                var result = await _emailSender.SendTestResults(
-                    request.Email,
-                    emailData,
-                    imageBytes
-                );
-
-                if (result.IsSuccess)
-                {
-                    return Ok(new { success = true, message = "Email sent successfully" });
-                }
-                else
-                {
-                    return StatusCode(500, new { success = false, message = result.Error.Description });
-                }                
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = ex.Message });
-            }
         }
 
         private bool IsValidEmail(string email)
