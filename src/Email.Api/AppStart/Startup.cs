@@ -2,6 +2,8 @@
 using Email.Api.BLL.Abstract;
 using Email.Api.BLL.Services;
 using Email.Api.Configuration;
+using Email.Api.Validators;
+using FluentValidation;
 using Microsoft.AspNetCore.Http.Features;
 
 namespace Email.Api.AppStart
@@ -30,6 +32,7 @@ namespace Email.Api.AppStart
             _builder.Services.AddHttpClient();
 
             InitConfigs();
+            RegisterValidators();
             AddEmailServices();
 
             _builder.Services.AddControllers();
@@ -43,6 +46,12 @@ namespace Email.Api.AppStart
                     .ValidateOnStart();
 
             _builder.Services.Configure<GoogleRecaptchaConfig>(_builder.Configuration.GetSection(GoogleRecaptchaConfig.SectionName));
+        }
+
+        private void RegisterValidators()
+        {
+            // Регистрируем все валидаторы из сборки, где находится EmailRequestValidator
+            _builder.Services.AddValidatorsFromAssemblyContaining<EmailRequestValidator>();
         }
 
         private void AddEmailServices()

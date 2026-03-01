@@ -1,6 +1,8 @@
 ﻿using Email.Api.BLL.Abstract;
 using Email.Api.BLL.Services.MppTests;
+using Email.Api.Extensions;
 using Email.Models.MppTests;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -13,14 +15,17 @@ namespace Email.Api.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger<MppTestsController> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IValidator<EmailRequest> _emailRequestValidator;
 
         public MppTestsController(
             IEmailSender emailSender,
             IHttpClientFactory httpClientFactory,
+            IValidator<EmailRequest> emailRequestValidator,
             ILogger<MppTestsController> logger)
         {
             _emailSender = emailSender;
             _httpClientFactory = httpClientFactory;
+            _emailRequestValidator = emailRequestValidator;
             _logger = logger;
         }
 
@@ -32,23 +37,17 @@ namespace Email.Api.Controllers
         }
 
         [HttpPost("send")]
-        [RequestSizeLimit(10 * 1024 * 1024)] // 10MB limit
+        [RequestSizeLimit(7 * 1024 * 1024)] // 8MB limit - общий лимит запроса
         public async Task<IActionResult> SendEmail([FromForm] EmailRequest request)
         {
-            _logger.LogInformation("mpptests send");
+            _logger.LogInformation("mpptests send email");
 
             try
             {
-                // Validate email
-                if (string.IsNullOrEmpty(request.Email) || !IsValidEmail(request.Email))
-                {
-                    return BadRequest(new { success = false, message = "Invalid email address" });
-                }
-
-                // Validate image
-                if (request.Image == null || request.Image.Length == 0)
-                {
-                    return BadRequest(new { success = false, message = "Image is required" });
+                var validationResult = await _emailRequestValidator.ValidateAsync(request);                
+                if (!validationResult.IsValid)
+                {                    
+                    return BadRequest(validationResult.ToProblemDetails());
                 }
 
                 _ = TrackVisitMppTestsAsync();
@@ -93,7 +92,6 @@ namespace Email.Api.Controllers
                 {
                     return StatusCode(500, new { success = false, message = result.Error.Description });
                 }
-
             }
             catch (Exception ex)
             {
