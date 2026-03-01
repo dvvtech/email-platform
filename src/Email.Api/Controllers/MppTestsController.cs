@@ -1,15 +1,13 @@
 ﻿using Email.Api.BLL.Abstract;
 using Email.Api.BLL.Services.MppTests;
 using Email.Models.MppTests;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace Email.Api.Controllers
 {
     [Route("mpptests")]
-    [ApiController]
-    //[EnableCors("AllowAll")]
+    [ApiController]    
     public class MppTestsController : ControllerBase
     {
         private readonly IEmailSender _emailSender;
@@ -26,11 +24,18 @@ namespace Email.Api.Controllers
             _logger = logger;
         }
 
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            _logger.LogInformation("mpptest");
+            return Ok("mpptest");
+        }
+
         [HttpPost("send")]
         [RequestSizeLimit(10 * 1024 * 1024)] // 10MB limit
-        public async Task<IActionResult> SendEmail2([FromForm] EmailRequest request)
+        public async Task<IActionResult> SendEmail([FromForm] EmailRequest request)
         {
-            _logger.LogInformation("mpptests send2");
+            _logger.LogInformation("mpptests send");
 
             try
             {
@@ -109,14 +114,7 @@ namespace Email.Api.Controllers
             {
                 return false;
             }
-        }
-
-        [HttpGet("test")]
-        public IActionResult Test()
-        {
-            _logger.LogInformation("test");
-            return Ok("123");
-        }
+        }        
 
         private async Task TrackVisitMppTestsAsync()
         {
