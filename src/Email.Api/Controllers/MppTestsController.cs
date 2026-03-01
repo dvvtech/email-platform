@@ -9,7 +9,7 @@ namespace Email.Api.Controllers
 {
     [Route("mpptests")]
     [ApiController]
-    [EnableCors("AllowAll")]
+    //[EnableCors("AllowAll")]
     public class MppTestsController : ControllerBase
     {
         private readonly IEmailSender _emailSender;
