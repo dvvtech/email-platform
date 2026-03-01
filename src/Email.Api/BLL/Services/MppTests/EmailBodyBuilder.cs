@@ -1,4 +1,5 @@
-﻿using Email.Models.MppTests;
+﻿using Email.Api.BLL.Models;
+using Email.Models.MppTests;
 using System.Text;
 
 namespace Email.Api.BLL.Services.MppTests
@@ -16,7 +17,7 @@ namespace Email.Api.BLL.Services.MppTests
             _userName = userName;
             _bodyBuilder = new StringBuilder();
         }
-        public string BuildHtmlEmail(EmailData emailData)
+        public string BuildHtmlEmail(EmailDataDto emailData)
         {
             var html = new StringBuilder();
 
@@ -116,7 +117,7 @@ namespace Email.Api.BLL.Services.MppTests
         /// <summary>
         /// Build complete email body with all test results
         /// </summary>
-        public string BuildEmailBody(EmailData emailData)
+        public string BuildEmailBody(EmailDataDto emailData)
         {
             AddHeader();
             AddUserInfo(emailData.UserData);
@@ -139,7 +140,7 @@ namespace Email.Api.BLL.Services.MppTests
             _bodyBuilder.AppendLine();
         }
 
-        private void AddUserInfo(UserData userData)
+        private void AddUserInfo(UserDataDto userData)
         {
             _bodyBuilder.AppendLine("📋 ИНФОРМАЦИЯ О ПОЛЬЗОВАТЕЛЕ");
             _bodyBuilder.AppendLine(new string('-', 30));
@@ -150,7 +151,7 @@ namespace Email.Api.BLL.Services.MppTests
             _bodyBuilder.AppendLine();
         }
 
-        private void AddTestInfo(UserData userData)
+        private void AddTestInfo(UserDataDto userData)
         {
             _bodyBuilder.AppendLine("🎯 ИНФОРМАЦИЯ О ТЕСТЕ");
             _bodyBuilder.AppendLine(new string('-', 30));
@@ -159,7 +160,7 @@ namespace Email.Api.BLL.Services.MppTests
             _bodyBuilder.AppendLine();
         }
 
-        private void AddColorStatistics(Dictionary<string, ColorStatistic> stats)
+        private void AddColorStatistics(Dictionary<string, ColorStatisticDto> stats)
         {
             if (stats == null || stats.Count == 0)
             {
@@ -189,7 +190,7 @@ namespace Email.Api.BLL.Services.MppTests
             _bodyBuilder.AppendLine();
         }
 
-        private void AddAnalysisResults(AnalysisResult results)
+        private void AddAnalysisResults(AnalysisResultDto results)
         {
             _bodyBuilder.AppendLine("📊 РЕЗУЛЬТАТЫ АНАЛИЗА");
             _bodyBuilder.AppendLine(new string('-', 30));
@@ -239,15 +240,5 @@ namespace Email.Api.BLL.Services.MppTests
             int filledLength = (int)Math.Round(percentage / 100.0 * length);
             return "█" + new string('█', filledLength) + new string('░', length - filledLength) + "█";
         }
-    }
-
-    /// <summary>
-    /// Data models for email content
-    /// </summary>
-    public class EmailData
-    {
-        public UserData UserData { get; set; }
-        public Dictionary<string, ColorStatistic> Stats { get; set; }
-        public AnalysisResult Results { get; set; }
-    }
+    }    
 }

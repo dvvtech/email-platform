@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Email.Models.MppTests
+﻿namespace Email.Api.BLL.Models
 {
-    public class ColorStatistic
+    public class ColorStatisticDto
     {
         /// <summary>
         /// Number of pixels of this color

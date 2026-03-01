@@ -1,4 +1,5 @@
 ﻿using Email.Api.BLL.Abstract;
+using Email.Api.BLL.Models;
 using Email.Api.BLL.Services.MppTests;
 using Email.Core.OperationResults.Base;
 using Email.Core.OperationResults.Errors;
@@ -58,7 +59,7 @@ namespace Email.Api.BLL.Services
             return Result.Success();
         }
 
-        public async Task<Result> SendTestResults(string to, EmailData emailData, byte[] imageBytes, string imageFileName = "test-result.png")
+        public async Task<Result> SendTestResults(string to, EmailDataDto emailData, byte[] imageBytes, string imageFileName = "test-result.png")
         {
             try
             {

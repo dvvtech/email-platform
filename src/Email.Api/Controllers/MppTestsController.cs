@@ -1,4 +1,5 @@
 ﻿using Email.Api.BLL.Abstract;
+using Email.Api.BLL.Models;
 using Email.Api.BLL.Services.MppTests;
 using Email.Api.Extensions;
 using Email.Models.MppTests;
@@ -56,13 +57,11 @@ namespace Email.Api.Controllers
                 {
                     PropertyNameCaseInsensitive = true // Игнорировать регистр
                 };
-                var userData = JsonSerializer.Deserialize<UserData>(request.UserData, options);
-                var results = JsonSerializer.Deserialize<AnalysisResult>(request.Results, options);
-                var stats = JsonSerializer.Deserialize<Dictionary<string, ColorStatistic>>(request.Stats, options);
+                var userData = JsonSerializer.Deserialize<UserDataDto>(request.UserData, options);
+                var results = JsonSerializer.Deserialize<AnalysisResultDto>(request.Results, options);
+                var stats = JsonSerializer.Deserialize<Dictionary<string, ColorStatisticDto>>(request.Stats, options);                
 
-                _logger.LogInformation(userData.Gender);
-
-                var emailData = new EmailData
+                var emailData = new EmailDataDto
                 {
                     UserData = userData,
                     Stats = stats,
