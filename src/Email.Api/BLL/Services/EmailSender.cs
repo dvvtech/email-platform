@@ -205,7 +205,7 @@ namespace Email.Api.BLL.Services
             {
                 html.AppendLine("<div class='color-item'>");
                 html.AppendLine("<div style='display: flex; justify-content: space-between;'>");
-                html.AppendLine($"<span><strong>{stat.Key}</strong></span>");
+                html.AppendLine($"<span><strong>{stat.Key}</strong></span>&nbsp;&nbsp;");
                 html.AppendLine($"<span>{stat.Value.Percentage}% ({stat.Value.Count:N0} пикселей)</span>");
                 html.AppendLine("</div>");
                 html.AppendLine($"<div class='color-bar' style='background: linear-gradient(90deg, {stat.Value.Hex} {stat.Value.Percentage}%, #e0e0e0 {stat.Value.Percentage}%);'></div>");
