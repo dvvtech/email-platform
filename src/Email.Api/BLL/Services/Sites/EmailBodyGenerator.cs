@@ -2,7 +2,7 @@
 using Email.Models;
 using System.Text;
 
-namespace Email.Api.BLL.Services
+namespace Email.Api.BLL.Services.Sites
 {
     public class EmailBodyGenerator : IEmailBodyGenerator
     {
