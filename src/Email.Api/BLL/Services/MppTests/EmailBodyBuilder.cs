@@ -56,18 +56,18 @@ namespace Email.Api.BLL.Services.MppTests
             html.AppendLine("<div class='section'>");
             html.AppendLine("<div class='section-title'>🎨 Использованные цвета</div>");
 
-            foreach (var stat in emailData.Stats.OrderByDescending(s => s.Value.Percentage))
+            foreach (var stat in emailData.Stats2.OrderByDescending(s => s.Percentage))
             {
                 html.AppendLine("<div class='color-item'>");
                 html.AppendLine("<div style='display: flex; justify-content: space-between;'>");
-                html.AppendLine($"<span><strong>{stat.Key}</strong></span>&nbsp;&nbsp;");
-                html.AppendLine($"<span>{stat.Value.Percentage}% ({stat.Value.Count:N0} пикселей)</span>");
+                html.AppendLine($"<span><strong>{stat.Name}</strong></span>&nbsp;&nbsp;");
+                html.AppendLine($"<span>{stat.Percentage}% ({stat.Count:N0} пикселей)</span>");
                 html.AppendLine("</div>");
-                html.AppendLine($"<div class='color-bar' style='background: linear-gradient(90deg, {stat.Value.Hex} {stat.Value.Percentage}%, #e0e0e0 {stat.Value.Percentage}%);'></div>");
+                html.AppendLine($"<div class='color-bar' style='background: linear-gradient(90deg, {stat.Hex} {stat.Percentage}%, #e0e0e0 {stat.Percentage}%);'></div>");
                 html.AppendLine("</div>");
             }
 
-            int totalPixels = emailData.Stats.Sum(s => s.Value.Count);
+            int totalPixels = emailData.Stats2.Sum(s => s.Count);
             html.AppendLine($"<p style='margin-top: 15px;'><strong>Всего раскрашено пикселей:</strong> {totalPixels:N0}</p>");
             html.AppendLine("</div>");
 
@@ -122,7 +122,7 @@ namespace Email.Api.BLL.Services.MppTests
             AddHeader();
             AddUserInfo(emailData.UserData);
             AddTestInfo(emailData.UserData);
-            AddColorStatistics(emailData.Stats);
+            AddColorStatistics(emailData.Stats2);
             AddAnalysisResults(emailData.Results);
             AddFooter();
 
@@ -190,6 +190,36 @@ namespace Email.Api.BLL.Services.MppTests
             _bodyBuilder.AppendLine();
         }
 
+        private void AddColorStatistics(ColorStatisticDto[] stats)
+        {
+            if (stats == null || stats.Length == 0)
+            {
+                _bodyBuilder.AppendLine("🎨 ИСПОЛЬЗОВАННЫЕ ЦВЕТА");
+                _bodyBuilder.AppendLine(new string('-', 30));
+                _bodyBuilder.AppendLine("Цвета не были использованы в тесте.");
+                _bodyBuilder.AppendLine();
+                return;
+            }
+
+            _bodyBuilder.AppendLine("🎨 ИСПОЛЬЗОВАННЫЕ ЦВЕТА");
+            _bodyBuilder.AppendLine(new string('-', 30));
+
+            var sortedStats = stats.OrderByDescending(s => s.Percentage);
+
+            foreach (var stat in sortedStats)
+            {
+                string colorBar = GenerateColorBar(stat.Percentage);
+                _bodyBuilder.AppendLine($"{stat.Name}: {stat.Percentage}% ({stat.Count} пикселей)");
+                _bodyBuilder.AppendLine($"  {colorBar}");
+            }
+
+            // Добавляем общую статистику
+            int totalPixels = stats.Sum(s => s.Count);
+            _bodyBuilder.AppendLine();
+            _bodyBuilder.AppendLine($"Всего раскрашено пикселей: {totalPixels:N0}");
+            _bodyBuilder.AppendLine();
+        }
+
         private void AddAnalysisResults(AnalysisResultDto results)
         {
             _bodyBuilder.AppendLine("📊 РЕЗУЛЬТАТЫ АНАЛИЗА");
@@ -235,7 +265,7 @@ namespace Email.Api.BLL.Services.MppTests
             _bodyBuilder.AppendLine("Это письмо сформировано автоматически. Пожалуйста, не отвечайте на него.");
         }
 
-        private string GenerateColorBar(int percentage, int length = 20)
+        private string GenerateColorBar(float percentage, int length = 20)
         {
             int filledLength = (int)Math.Round(percentage / 100.0 * length);
             return "█" + new string('█', filledLength) + new string('░', length - filledLength) + "█";

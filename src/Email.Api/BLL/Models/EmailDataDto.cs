@@ -8,7 +8,8 @@ namespace Email.Api.BLL.Models
     public class EmailDataDto
     {
         public UserDataDto UserData { get; set; }
-        public Dictionary<string, ColorStatisticDto> Stats { get; set; }
+        //public Dictionary<string, ColorStatisticDto> Stats { get; set; }
+        public ColorStatisticDto[] Stats2 { get; set; }
         public AnalysisResultDto Results { get; set; }
     }    
 }

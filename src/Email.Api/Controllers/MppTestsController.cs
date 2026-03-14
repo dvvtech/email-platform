@@ -1,6 +1,5 @@
 ﻿using Email.Api.BLL.Abstract;
 using Email.Api.BLL.Models;
-using Email.Api.BLL.Services.MppTests;
 using Email.Api.Extensions;
 using Email.Models.MppTests;
 using FluentValidation;
@@ -34,6 +33,14 @@ namespace Email.Api.Controllers
         public IActionResult Test()
         {
             _logger.LogInformation("mpptest");
+
+            //var options = new JsonSerializerOptions
+            //{
+            //    PropertyNameCaseInsensitive = true // Игнорировать регистр
+            //};
+            //var test = "[{\"name\":\"Красный\",\"count\":7533,\"percentage\":48.7320481304179,\"hex\":\"#ef4444\"},{\"name\":\"Желтый\",\"count\":6659,\"percentage\":43.07801785483245,\"hex\":\"#eab308\"},{\"name\":\"Коричневый\",\"count\":1266,\"percentage\":8.189934014749644,\"hex\":\"#92400e\"}]";
+            //var results = JsonSerializer.Deserialize<ColorStatisticDto[]>(test, options);
+
             return Ok("mpptest");
         }
 
@@ -64,12 +71,14 @@ namespace Email.Api.Controllers
 
                 var userData = JsonSerializer.Deserialize<UserDataDto>(request.UserData, options);
                 var results = JsonSerializer.Deserialize<AnalysisResultDto>(request.Results, options);
-                var stats = JsonSerializer.Deserialize<Dictionary<string, ColorStatisticDto>>(request.Stats, options);                
+                var stats = JsonSerializer.Deserialize<ColorStatisticDto[]>(request.Stats, options);
+                //var stats = JsonSerializer.Deserialize<Dictionary<string, ColorStatisticDto>>(request.Stats, options);
 
                 var emailData = new EmailDataDto
                 {
                     UserData = userData,
-                    Stats = stats,
+                    //Stats = stats,
+                    Stats2 = stats,
                     Results = results
                 };
 
