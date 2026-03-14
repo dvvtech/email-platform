@@ -57,6 +57,11 @@ namespace Email.Api.Controllers
                 {
                     PropertyNameCaseInsensitive = true // Игнорировать регистр
                 };
+
+                _logger.LogInformation($"userData: {request.UserData}");
+                _logger.LogInformation($"results: {request.Results}");
+                _logger.LogInformation($"stats: {request.Stats}");
+
                 var userData = JsonSerializer.Deserialize<UserDataDto>(request.UserData, options);
                 var results = JsonSerializer.Deserialize<AnalysisResultDto>(request.Results, options);
                 var stats = JsonSerializer.Deserialize<Dictionary<string, ColorStatisticDto>>(request.Stats, options);                
