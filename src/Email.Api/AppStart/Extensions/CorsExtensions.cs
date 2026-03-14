@@ -15,7 +15,8 @@
                         policy.WithOrigins("https://oxford-ap.com",
                                            "https://yashel.center",
                                            "https://pingmetasks.com",
-                                           "https://dvvtech.github.io")
+                                           "https://dvvtech.github.io",
+                                           "https://mpptests.com")
                               //.AllowCredentials() // Разрешить куки
                               .AllowAnyHeader()
                               .AllowCredentials()
