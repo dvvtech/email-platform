@@ -108,7 +108,7 @@ namespace Email.Api.BLL.Services.MppTests
                 html.AppendLine("<ul>");
                 foreach (var strength in emailData.Results.Strengths)
                 {
-                    html.AppendLine($"<li>✓ {strength}</li>");
+                    html.AppendLine($"<li> {strength}</li>");
                 }
                 html.AppendLine("</ul>");
             }
@@ -119,7 +119,7 @@ namespace Email.Api.BLL.Services.MppTests
                 html.AppendLine("<ul>");
                 foreach (var recommendation in emailData.Results.Recommendations)
                 {
-                    html.AppendLine($"<li>• {recommendation}</li>");
+                    html.AppendLine($"<li> {recommendation}</li>");
                 }
                 html.AppendLine("</ul>");
             }
