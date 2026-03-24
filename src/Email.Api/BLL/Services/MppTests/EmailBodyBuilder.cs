@@ -90,6 +90,7 @@ namespace Email.Api.BLL.Services.MppTests
                 html.AppendLine("<div style='margin-top:10px; font-weight:bold; color:#444;'>");
                 html.AppendLine($"{emailData.Results.DominantEnergy}");
                 html.AppendLine("</div>");
+                html.AppendLine("<br/>");
             }
 
             //int totalPixels = emailData.Stats2.Sum(s => s.Count);
@@ -231,9 +232,7 @@ namespace Email.Api.BLL.Services.MppTests
             if (results != null && !string.IsNullOrWhiteSpace(results.DominantEnergy))
             {                
                 _bodyBuilder.AppendLine($"👉 {results.DominantEnergy}");
-                _bodyBuilder.AppendLine();
-                _bodyBuilder.AppendLine();
-                _bodyBuilder.AppendLine();
+                _bodyBuilder.AppendLine();                
             }
         }
 
