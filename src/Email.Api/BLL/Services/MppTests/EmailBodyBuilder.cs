@@ -61,7 +61,7 @@ namespace Email.Api.BLL.Services.MppTests
                 html.AppendLine("<div class='color-item'>");
                 html.AppendLine("<div style='display: flex; justify-content: space-between;'>");
                 html.AppendLine($"<span><strong>{stat.Name}</strong></span>&nbsp;&nbsp;");
-                html.AppendLine($"<span>{Math.Round(stat.Percentage, 1)}% ({stat.Count:N0} пикселей)</span>");
+                html.AppendLine($"<span>{Math.Round(stat.Percentage, 1)}% </span>");
                 html.AppendLine("</div>");
                 html.AppendLine($"<div class='color-bar' style='background: linear-gradient(90deg, {stat.Hex} {stat.Percentage}%, #e0e0e0 {stat.Percentage}%);'></div>");
                 html.AppendLine("</div>");
@@ -205,15 +205,9 @@ namespace Email.Api.BLL.Services.MppTests
             foreach (var stat in sortedStats)
             {
                 string colorBar = GenerateColorBar(stat.Percentage);
-                _bodyBuilder.AppendLine($"{stat.Name}: {Math.Round(stat.Percentage, 1)}% ({stat.Count} пикселей)");
+                _bodyBuilder.AppendLine($"{stat.Name}: {Math.Round(stat.Percentage, 1)}% ");
                 _bodyBuilder.AppendLine($"  {colorBar}");
             }
-
-            // Добавляем общую статистику
-            int totalPixels = stats.Sum(s => s.Count);
-            _bodyBuilder.AppendLine();
-            _bodyBuilder.AppendLine($"Всего раскрашено пикселей: {totalPixels:N0}");
-            _bodyBuilder.AppendLine();
 
             // 🎨 Распределение цветов (одной строкой)
             _bodyBuilder.AppendLine("Распределение цветов:");
