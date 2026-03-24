@@ -232,6 +232,8 @@ namespace Email.Api.BLL.Services.MppTests
             {                
                 _bodyBuilder.AppendLine($"👉 {results.DominantEnergy}");
                 _bodyBuilder.AppendLine();
+                _bodyBuilder.AppendLine();
+                _bodyBuilder.AppendLine();
             }
         }
 
