@@ -90,7 +90,7 @@ namespace Email.Api.BLL.Services.MppTests
                 html.AppendLine("<div style='margin-top:10px; font-weight:bold; color:#444;'>");
                 html.AppendLine($"{emailData.Results.DominantEnergy}");
                 html.AppendLine("</div>");
-                html.AppendLine("<br/>");
+                html.AppendLine("<br/><br/>");
             }
 
             //int totalPixels = emailData.Stats2.Sum(s => s.Count);
