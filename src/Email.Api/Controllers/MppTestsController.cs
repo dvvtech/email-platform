@@ -68,7 +68,7 @@ namespace Email.Api.Controllers
                 var userData = JsonSerializer.Deserialize<UserDataDto>(request.UserData, options);
                 var results = JsonSerializer.Deserialize<AnalysisResultDto>(request.Results, options);
                 var stats = JsonSerializer.Deserialize<ColorStatisticDto[]>(request.Stats, options);
-                _logger.LogInformation(results.DominantEnergy);
+                
                 var emailData = new EmailDataDto
                 {
                     UserData = userData,

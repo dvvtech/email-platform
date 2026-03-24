@@ -67,9 +67,34 @@ namespace Email.Api.BLL.Services.MppTests
                 html.AppendLine("</div>");
             }
 
-            int totalPixels = emailData.Stats2.Sum(s => s.Count);
-            html.AppendLine($"<p style='margin-top: 15px;'><strong>Всего раскрашено пикселей:</strong> {totalPixels:N0}</p>");
-            html.AppendLine("</div>");
+            // Распределение цветов
+            if (emailData.Stats2 != null && emailData.Stats2.Any())
+            {
+                html.AppendLine("<div style='margin-top:15px;'>");
+                html.AppendLine("<div style='font-weight:bold; margin-bottom:5px;'>Распределение цветов</div>");
+                html.AppendLine("<div style='display:flex; height:20px; border-radius:6px; overflow:hidden; border:1px solid #ccc;'>");
+
+                foreach (var stat in emailData.Stats2)
+                {
+                    html.AppendLine(
+                        $"<div title='{stat.Name}: {Math.Round(stat.Percentage, 1)}%' " +
+                        $"style='width:{stat.Percentage}%; background-color:{stat.Hex};'></div>");
+                }
+
+                html.AppendLine("</div>");
+                html.AppendLine("</div>");
+            }
+
+            if (!string.IsNullOrEmpty(emailData.Results.DominantEnergy))
+            {
+                html.AppendLine("<div style='margin-top:10px; font-weight:bold; color:#444;'>");
+                html.AppendLine($"{emailData.Results.DominantEnergy}");
+                html.AppendLine("</div>");
+            }
+
+            //int totalPixels = emailData.Stats2.Sum(s => s.Count);
+            //html.AppendLine($"<p style='margin-top: 15px;'><strong>Всего раскрашено пикселей:</strong> {totalPixels:N0}</p>");
+            //html.AppendLine("</div>");
 
             // Результаты анализа
             html.AppendLine("<div class='section'>");
@@ -122,7 +147,7 @@ namespace Email.Api.BLL.Services.MppTests
             AddHeader();
             AddUserInfo(emailData.UserData);
             AddTestInfo(emailData.UserData);
-            AddColorStatistics(emailData.Stats2);
+            AddColorStatistics(emailData.Stats2, emailData.Results);
             AddAnalysisResults(emailData.Results);
             AddFooter();
 
@@ -160,7 +185,7 @@ namespace Email.Api.BLL.Services.MppTests
             _bodyBuilder.AppendLine();
         }
 
-        private void AddColorStatistics(ColorStatisticDto[] stats)
+        private void AddColorStatistics(ColorStatisticDto[] stats, AnalysisResultDto results)
         {
             if (stats == null || stats.Length == 0)
             {
@@ -188,6 +213,26 @@ namespace Email.Api.BLL.Services.MppTests
             _bodyBuilder.AppendLine();
             _bodyBuilder.AppendLine($"Всего раскрашено пикселей: {totalPixels:N0}");
             _bodyBuilder.AppendLine();
+
+            // 🎨 Распределение цветов (одной строкой)
+            _bodyBuilder.AppendLine("Распределение цветов:");
+            _bodyBuilder.AppendLine(new string('-', 25));
+
+            var distributionBar = string.Join("", sortedStats.Select(s =>
+            {
+                int length = (int)Math.Round(s.Percentage / 100.0 * 50); // 50 символов ширина
+                return new string('█', Math.Max(length, 1));
+            }));
+
+            _bodyBuilder.AppendLine(distributionBar);
+            _bodyBuilder.AppendLine();
+
+            // 🧠 Dominant Energy
+            if (results != null && !string.IsNullOrWhiteSpace(results.DominantEnergy))
+            {                
+                _bodyBuilder.AppendLine($"👉 {results.DominantEnergy}");
+                _bodyBuilder.AppendLine();
+            }
         }
 
         private void AddAnalysisResults(AnalysisResultDto results)
@@ -210,7 +255,7 @@ namespace Email.Api.BLL.Services.MppTests
                 }
                 _bodyBuilder.AppendLine();
             }
-
+            
             // Рекомендации
             if (results.Recommendations != null && results.Recommendations.Any())
             {
