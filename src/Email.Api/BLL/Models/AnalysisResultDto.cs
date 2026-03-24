@@ -16,5 +16,7 @@
         /// List of recommendations based on the test
         /// </summary>
         public List<string> Recommendations { get; set; }
+
+        public string DominantEnergy { get; set; }
     }
 }
