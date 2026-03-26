@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>297f953f-9615-45f0-b174-37969de7c0f3</UserSecretsId>
@@ -13,7 +13,7 @@
 	  <PackageReference Include="FluentValidation" Version="12.1.1" />	  
 	  <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />	  
 	  <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
-	  <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
+	  <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.7" />
   </ItemGroup>
 
   <ItemGroup>
