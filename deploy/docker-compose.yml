@@ -1,28 +1,24 @@
 services:
   email_api:
-    container_name: email-api-container
-    build:
-      context: ..
-      dockerfile: src/Email.Api/Dockerfile
+    image: ghcr.io/dvvtech/email-platform:latest    
     environment:
-      - ASPNETCORE_ENVIRONMENT=Prod
-      - SmtpConfig__Username=${SMTP_USERNAME}
-      - SmtpConfig__Password=${SMTP_PASSWORD}
-      - GoogleRecaptcha__SecretKeyForOxfordAp=${RECAPTCHA_OXFORD_SECRET}
-      - GoogleRecaptcha__SecretKeyForYashelCenter=${RECAPTCHA_YASHEL_SECRET}
-      - GoogleRecaptcha__SecretKeyForPingmetasks=${RECAPTCHA_PINGME_SECRET}
-    restart: unless-stopped    
+      - ASPNETCORE_ENVIRONMENT=Prod          
     networks:
-      - public-network
-    labels:      
-      - "traefik.enable=true"      
-      - "traefik.http.routers.email-api.rule=Host(`api.cloud-platform.pro`) && PathPrefix(`/email`)"      
-      - "traefik.http.routers.email-api.entrypoints=websecure"      
-      - "traefik.http.routers.email-api.tls.certresolver=letsencrypt"     
-      - "traefik.http.services.email-api.loadbalancer.server.port=8080"
-      - "traefik.http.middlewares.email-stripprefix.stripprefix.prefixes=/email"
-      - "traefik.http.routers.email-api.middlewares=email-stripprefix"
+      - public-network5
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      labels:   
+        - "traefik.enable=true"      
+        - "traefik.http.routers.email-api.rule=Host(`api.cloud-platform.pro`) && PathPrefix(`/email`)"      
+        - "traefik.http.routers.email-api.entrypoints=websecure"      
+        - "traefik.http.routers.email-api.tls.certresolver=letsencrypt"     
+        - "traefik.http.services.email-api.loadbalancer.server.port=8080"
+        - "traefik.http.middlewares.email-stripprefix.stripprefix.prefixes=/email"
+        - "traefik.http.routers.email-api.middlewares=email-stripprefix"
 
 networks:
-  public-network:
+  public-network5:
     external: true
