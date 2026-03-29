@@ -54,17 +54,17 @@ namespace Email.Api.AppStart
             _builder.Services.Configure<GoogleRecaptchaConfig>(_builder.Configuration.GetSection(GoogleRecaptchaConfig.SectionName));
 
 
-            var logger = _builder.Services.BuildServiceProvider().GetService<ILogger<Startup>>();
-            var smtpConfig = _builder.Configuration.GetSection(SmtpConfig.SectionName).Get<SmtpConfig>();
-            logger.LogInformation("host:" + smtpConfig.Host);
-            logger.LogInformation("port:" + smtpConfig.Port);
-            logger.LogInformation("username:" + smtpConfig.Username);
-            logger.LogInformation("pswd:" + smtpConfig.Password);
+            //var logger = _builder.Services.BuildServiceProvider().GetService<ILogger<Startup>>();
+            //var smtpConfig = _builder.Configuration.GetSection(SmtpConfig.SectionName).Get<SmtpConfig>();
+            //logger.LogInformation("host:" + smtpConfig.Host);
+            //logger.LogInformation("port:" + smtpConfig.Port);
+            //logger.LogInformation("username:" + smtpConfig.Username);
+            //logger.LogInformation("pswd:" + smtpConfig.Password);
 
-            var config = _builder.Configuration.GetSection(GoogleRecaptchaConfig.SectionName).Get<GoogleRecaptchaConfig>();
-            logger.LogInformation("s1:" + config.SecretKeyForPingmetasks);
-            logger.LogInformation("s2:" + config.SecretKeyForYashelCenter);
-            logger.LogInformation("s3:" + config.SecretKeyForOxfordAp);
+            //var config = _builder.Configuration.GetSection(GoogleRecaptchaConfig.SectionName).Get<GoogleRecaptchaConfig>();
+            //logger.LogInformation("s1:" + config.SecretKeyForPingmetasks);
+            //logger.LogInformation("s2:" + config.SecretKeyForYashelCenter);
+            //logger.LogInformation("s3:" + config.SecretKeyForOxfordAp);
         }
 
         private void RegisterValidators()
