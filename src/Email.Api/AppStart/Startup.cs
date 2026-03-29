@@ -60,7 +60,6 @@ namespace Email.Api.AppStart
             logger.LogInformation("port:" + smtpConfig.Port);
             logger.LogInformation("username:" + smtpConfig.Username);
             logger.LogInformation("pswd:" + smtpConfig.Password);
-
         }
 
         private void RegisterValidators()
