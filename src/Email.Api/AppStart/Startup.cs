@@ -41,12 +41,26 @@ namespace Email.Api.AppStart
 
         private void InitConfigs()
         {
+            if (!_builder.Environment.IsDevelopment())
+            {
+                _builder.Configuration.AddKeyPerFile("/run/secrets", optional: true);
+            }
+
             _builder.Services.AddOptions<SmtpConfig>()
                     .Bind(_builder.Configuration.GetSection(SmtpConfig.SectionName))
                     .ValidateDataAnnotations()
                     .ValidateOnStart();
 
             _builder.Services.Configure<GoogleRecaptchaConfig>(_builder.Configuration.GetSection(GoogleRecaptchaConfig.SectionName));
+
+
+            var logger = _builder.Services.BuildServiceProvider().GetService<ILogger<Startup>>();
+            var smtpConfig = _builder.Configuration.GetSection(SmtpConfig.SectionName).Get<SmtpConfig>();
+            logger.LogInformation("host:" + smtpConfig.Host);
+            logger.LogInformation("port:" + smtpConfig.Port);
+            logger.LogInformation("username:" + smtpConfig.Username);
+            logger.LogInformation("pswd:" + smtpConfig.Password);
+
         }
 
         private void RegisterValidators()

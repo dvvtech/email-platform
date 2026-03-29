@@ -5,6 +5,12 @@ services:
       - ASPNETCORE_ENVIRONMENT=Prod          
     networks:
       - public-network5
+    secrets:
+      - SmtpConfig__Username
+      - SmtpConfig__Password
+      - GoogleRecaptcha__SecretKeyForOxfordAp
+      - GoogleRecaptcha__SecretKeyForYashelCenter
+      - GoogleRecaptcha__SecretKeyForPingmetasks      
     deploy:
       mode: replicated
       replicas: 1
@@ -21,4 +27,16 @@ services:
 
 networks:
   public-network5:
+    external: true
+
+secrets:
+  SmtpConfig__Username:
+    external: true
+  SmtpConfig__Password:
+    external: true
+  GoogleRecaptcha__SecretKeyForOxfordAp:
+    external: true
+  GoogleRecaptcha__SecretKeyForYashelCenter:
+    external: true
+  GoogleRecaptcha__SecretKeyForPingmetasks:
     external: true
