@@ -60,6 +60,11 @@ namespace Email.Api.AppStart
             logger.LogInformation("port:" + smtpConfig.Port);
             logger.LogInformation("username:" + smtpConfig.Username);
             logger.LogInformation("pswd:" + smtpConfig.Password);
+
+            var config = _builder.Configuration.GetSection(GoogleRecaptchaConfig.SectionName).Get<GoogleRecaptchaConfig>();
+            logger.LogInformation("s1:" + config.SecretKeyForPingmetasks);
+            logger.LogInformation("s2:" + config.SecretKeyForYashelCenter);
+            logger.LogInformation("s3:" + config.SecretKeyForOxfordAp);
         }
 
         private void RegisterValidators()
