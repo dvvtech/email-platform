@@ -6,8 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 var startup = new Startup(builder);
 startup.Initialize();
 
-builder.Services.AddControllers();
-
 var app = builder.Build();
 
 var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
@@ -24,6 +22,7 @@ else
     app.ApplyCors();
 }
 
+app.UseRateLimiter();
 app.MapControllers();
 
 app.Run();

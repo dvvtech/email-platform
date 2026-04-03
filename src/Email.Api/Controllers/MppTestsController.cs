@@ -5,6 +5,7 @@ using Email.Api.Extensions;
 using Email.Models.MppTests;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Text.Json;
 
 namespace Email.Api.Controllers
@@ -31,6 +32,7 @@ namespace Email.Api.Controllers
         }        
 
         [HttpPost("send")]
+        [EnableRateLimiting("EmailRequests")]
         [RequestSizeLimit(7 * 1024 * 1024)] // 8MB limit - общий лимит запроса
         public async Task<IActionResult> SendEmail([FromForm] EmailRequest request)
         {

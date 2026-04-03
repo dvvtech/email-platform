@@ -7,6 +7,7 @@ using Email.Api.Configuration;
 using Email.Api.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.Features;
+using System.Threading.RateLimiting;
 
 namespace Email.Api.AppStart
 {
@@ -36,6 +37,7 @@ namespace Email.Api.AppStart
             InitConfigs();
             RegisterValidators();
             AddServices();
+            ConfigureRateLimiting();
 
             _builder.Services.AddControllers();
         }
@@ -102,6 +104,39 @@ namespace Email.Api.AppStart
                     smtpConfig.Password,
                     logger
                 );
+            });
+        }
+
+        private void ConfigureRateLimiting()
+        {
+            _builder.Services.AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+                options.OnRejected = async (context, cancellationToken) =>
+                {
+                    context.HttpContext.Response.ContentType = "application/json";
+
+                    await context.HttpContext.Response.WriteAsJsonAsync(new
+                    {
+                        Success = false,
+                        ErrorMessage = "Превышено количество запросов. Попробуйте позже."
+                    }, cancellationToken);
+                };
+
+                options.AddPolicy("EmailRequests", httpContext =>
+                {
+                    var clientIp = httpContext.GetRealClientIp();
+
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: clientIp,
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 5,
+                            Window = TimeSpan.FromMinutes(1),
+                            QueueLimit = 0,
+                            AutoReplenishment = true
+                        });
+                });
             });
         }
     }
