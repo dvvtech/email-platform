@@ -14,36 +14,21 @@ namespace Email.Api.Controllers
     public class MppTestsController : ControllerBase
     {
         private readonly IEmailSender _emailSender;
-        private readonly ILogger<MppTestsController> _logger;
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IAnalyticsTrackingService _analyticsTrackingService;
+        private readonly ILogger<MppTestsController> _logger;        
         private readonly IValidator<EmailRequest> _emailRequestValidator;
 
         public MppTestsController(
             IEmailSender emailSender,
-            IHttpClientFactory httpClientFactory,
+            IAnalyticsTrackingService analyticsTrackingService,            
             IValidator<EmailRequest> emailRequestValidator,
             ILogger<MppTestsController> logger)
         {
             _emailSender = emailSender;
-            _httpClientFactory = httpClientFactory;
+            _analyticsTrackingService = analyticsTrackingService;            
             _emailRequestValidator = emailRequestValidator;
             _logger = logger;
-        }
-
-        [HttpGet("test")]
-        public IActionResult Test()
-        {
-            _logger.LogInformation("mpptest");
-
-            //var options = new JsonSerializerOptions
-            //{
-            //    PropertyNameCaseInsensitive = true // Игнорировать регистр
-            //};
-            //var test = "[{\"name\":\"Красный\",\"count\":7533,\"percentage\":48.7320481304179,\"hex\":\"#ef4444\"},{\"name\":\"Желтый\",\"count\":6659,\"percentage\":43.07801785483245,\"hex\":\"#eab308\"},{\"name\":\"Коричневый\",\"count\":1266,\"percentage\":8.189934014749644,\"hex\":\"#92400e\"}]";
-            //var results = JsonSerializer.Deserialize<ColorStatisticDto[]>(test, options);
-
-            return Ok("mpptest");
-        }
+        }        
 
         [HttpPost("send")]
         [RequestSizeLimit(7 * 1024 * 1024)] // 8MB limit - общий лимит запроса
@@ -59,7 +44,7 @@ namespace Email.Api.Controllers
                     return BadRequest(validationResult.ToProblemDetails());
                 }
 
-                _ = TrackVisitMppTestsAsync();
+                TrackVisitMppTests();
 
                 var options = new JsonSerializerOptions
                 {
@@ -110,46 +95,27 @@ namespace Email.Api.Controllers
             return Ok(new { success = true, message = "Email sent successfully" });
         }
 
-        private bool IsValidEmail(string email)
+        private void TrackVisitMppTests(CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
-            }
-            catch
-            {
-                return false;
-            }
-        }        
-
-        private async Task TrackVisitMppTestsAsync()
-        {
-            var httpClient = _httpClientFactory.CreateClient();
-
             var clientIp = HttpContext.GetRealClientIp();
-
-            // Создаем запрос к analytics
-            var request = new HttpRequestMessage(
-                HttpMethod.Get,
-                "http://analytics-api-container:8080/v1/analytics/track-mpptests");
-
-            request.Headers.Add("X-Forwarded-For", clientIp);
-            request.Headers.Add("X-Real-IP", clientIp);
-            request.Headers.Add("X-Operation-Type", "send email");
-
-            // Прокидываем оригинальный User-Agent
             var userAgent = Request.Headers["User-Agent"].ToString();
-            if (!string.IsNullOrEmpty(userAgent))
-            {
-                request.Headers.Add("User-Agent", userAgent);
-            }
 
-            var response = await httpClient.SendAsync(request);
-            if (!response.IsSuccessStatusCode)
-            {
-                _logger.LogWarning($"Analytics tracking failed: {response.StatusCode}");
-            }
+            _ = _analyticsTrackingService.TrackVisitAsync("send email", clientIp, userAgent, cancellationToken);
+        }
+
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            _logger.LogInformation("mpptest");
+
+            //var options = new JsonSerializerOptions
+            //{
+            //    PropertyNameCaseInsensitive = true // Игнорировать регистр
+            //};
+            //var test = "[{\"name\":\"Красный\",\"count\":7533,\"percentage\":48.7320481304179,\"hex\":\"#ef4444\"},{\"name\":\"Желтый\",\"count\":6659,\"percentage\":43.07801785483245,\"hex\":\"#eab308\"},{\"name\":\"Коричневый\",\"count\":1266,\"percentage\":8.189934014749644,\"hex\":\"#92400e\"}]";
+            //var results = JsonSerializer.Deserialize<ColorStatisticDto[]>(test, options);
+
+            return Ok("mpptest");
         }
     }
 }

@@ -24,10 +24,6 @@ else
     app.ApplyCors();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

@@ -1,6 +1,7 @@
 ﻿using Email.Api.AppStart.Extensions;
 using Email.Api.BLL.Abstract;
 using Email.Api.BLL.Services;
+using Email.Api.BLL.Services.MppTests;
 using Email.Api.BLL.Services.Sites;
 using Email.Api.Configuration;
 using Email.Api.Validators;
@@ -34,7 +35,7 @@ namespace Email.Api.AppStart
 
             InitConfigs();
             RegisterValidators();
-            AddEmailServices();
+            AddServices();
 
             _builder.Services.AddControllers();
         }
@@ -73,8 +74,10 @@ namespace Email.Api.AppStart
             _builder.Services.AddValidatorsFromAssemblyContaining<EmailRequestValidator>();
         }
 
-        private void AddEmailServices()
+        private void AddServices()
         {
+            _builder.Services.AddScoped<IAnalyticsTrackingService, AnalyticsTrackingService>();
+
             // Configure file upload limits
             _builder.Services.Configure<FormOptions>(options =>
             {
