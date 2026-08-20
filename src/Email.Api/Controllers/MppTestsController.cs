@@ -2,11 +2,6 @@
 using Email.Api.BLL.Abstract;
 using Email.Api.BLL.Models;
 using Email.Api.Extensions;
-using Email.Models.MppTests;
-using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.RateLimiting;
-using System.Text.Json;
 
 namespace Email.Api.Controllers
 {
